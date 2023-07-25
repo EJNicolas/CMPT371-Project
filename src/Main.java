@@ -1,6 +1,10 @@
 import javax.swing.JFrame;
 
+import server.*;
+
 public class Main {
+    public static final String HOST = "localhost";
+    public static final int PORT = 5000;
 
 	public static void main(String[] args) {
 		JFrame frame = new JFrame("CMPT 371 Project");
@@ -10,6 +14,7 @@ public class Main {
         frame.pack();
         frame.setVisible(true);
 
+        new TCPServer(PORT).startServer();
 	}
 
 }

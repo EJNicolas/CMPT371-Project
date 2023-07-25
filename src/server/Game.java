@@ -32,16 +32,6 @@ public class Game
         initializeBoard();
     }
 
-    // Getters
-    public int getPlayerCount() { return playerCount; }
-
-    // Gets game data instance, creates one if it doesn't exist
-    public static Game getInstance()
-    {
-        if (instance == null) { instance = new Game(); }
-        return instance;
-    }
-
     // Initialize board data
     private void initializeBoard()
     {
@@ -53,6 +43,16 @@ public class Game
                 gameboard[i][j] = 0;
             }
         }
+    }
+
+    // Getters
+    public int getPlayerCount() { return playerCount; }
+
+    // Gets game data instance, creates one if it doesn't exist
+    public static Game getInstance()
+    {
+        if (instance == null) { instance = new Game(); }
+        return instance;
     }
 
     // Add a player given playerID and returns the total number of players in game
