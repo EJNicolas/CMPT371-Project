@@ -1,3 +1,12 @@
+/* 
+ *  ServerThread.java
+ * 
+ *  Description: This class implements Runnable so that it can be run as a thread.
+ *               Each thread is responsible for handling a single client, with its own input and output streams.
+ *               Each thread also listens for connected client input and sends a response.
+ *               Use interrupt() to close the client socket and streams.
+ */
+
 package server;
 
 import java.io.*;

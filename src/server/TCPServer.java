@@ -1,3 +1,11 @@
+/* 
+ *  TCPServer.java
+ * 
+ *  Description: Responsible for setting up a TCP server socket on the given port.
+ *               Creates a new thread (ServerThread) for each client that connects.
+ *               Use close() to close the server socket and all client threads.
+*/
+
 package server;
 
 import java.io.*;
