@@ -1,3 +1,9 @@
+/*
+ * 	Player.java
+ * 	Description: Keeps track of a player's fields
+ * 
+ */
+
 package classes;
 import java.awt.Color;
 import java.awt.Graphics;

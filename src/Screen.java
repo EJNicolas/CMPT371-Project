@@ -1,14 +1,20 @@
+/*
+ * 	Screen.java
+ * 	Description: Implements JPanel to create a window users can interact with.
+ * 				 Contains events to track the local player's mouse controls.
+ * 				 Draws elements onto the screen from paintComponent function.
+ * 
+ */
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import classes.*;
-
 
 public class Screen extends JPanel implements ActionListener, MouseListener {
 	private Timer timer;
@@ -116,6 +122,9 @@ public class Screen extends JPanel implements ActionListener, MouseListener {
 		
 		if(currSquare != null) {
 			currSquare.addDot(new Dot(localPlayer, mousePosX, mousePosY));
+			
+			if(currSquare.checkDotsArea()) currSquare.lockSquare(localPlayer);
+			else currSquare.unlockSquare();
 		}
 	}
 
