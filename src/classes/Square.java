@@ -9,8 +9,11 @@
 
 package classes;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 
 public class Square {
 	int[] pos = new int[2];
@@ -75,32 +78,38 @@ public class Square {
 		else return false;
 	}
 	
-	/*
-	 * this is checking the average position of all of the dots in the square and finding the dot farthest away from the center of the square. 
-	 * with this, it calculates an area of a circle using that avg dot as a center, and the distance from the farthest dot the radius
-	 * 
-	 * if you want to easily take a square, make a line across the square
-	 */
+	
+    //this method checks if the dots drawn by a player occupy at least 50% of the square's area*/
+	
 	public boolean checkDotsArea() {
-		int xSum = 0; 
-		int ySum = 0;
-		
-		double radius = 0;
-		
-		for(int i=0; i<dots.size();i++) {
-			int[] posD = dots.get(i).getPos();
-			xSum += posD[0];
-			ySum += posD[1];
+		Set<Point> uniquePoints = new HashSet<>();
+	
+		for(Dot dot : dots) {
 			
-			double newRadius = Math.hypot(posD[0] - (pos[0] + l/2), posD[1] - (pos[1] + l/2));
-			if(newRadius > radius) radius = newRadius;
+			int[] posD = dot.getPos();
+			
+			if(checkCollision(posD[0], posD[1])) {  // check if dot is inside square
+				
+				for(int i = -dot.radius; i < dot.radius; i++) { 
+					
+					for(int j = -dot.radius; j < dot.radius; j++) {                
+						
+						if(i*i + j*j <= dot.radius * dot.radius) {  // ensures we are checking the actual circular area of a dot drawn
+							
+							int x = posD[0] + i;
+							int y = posD[1] + j;
+							if(checkCollision(x, y)) {
+								uniquePoints.add(new Point(x, y));
+							}
+						}
+					}
+				}
+			}
 		}
-		
-		int avgX = xSum / dots.size();
-		int avgY = ySum / dots.size();
-		double dotsArea =  Math.PI * radius * radius;
-		
-		if(dotsArea > l * l * fillPercentageReq) return true;
+		double squareArea = l * l;
+		double dotsArea = uniquePoints.size(); // 1 dot = 1 point
+	
+		if(dotsArea > squareArea * 0.5) return true;  // check if dots cover more than 50% of the square
 		else return false;
 	}
 	

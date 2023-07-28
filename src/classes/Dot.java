@@ -17,10 +17,10 @@ public class Dot {
 	Color color;
 	int radius;
 	
-	public Dot(Player owner, int x, int y){
+	public Dot(Player owner, double x, double y){	// changed x y to double for new checkDotsArea()
 		this.owner = owner;
-		pos[0] = x;
-		pos[1] = y;
+		pos[0] = (int)x;
+		pos[1] = (int)y;
 		color = owner.getColor();
 		radius = 10;
 	}
