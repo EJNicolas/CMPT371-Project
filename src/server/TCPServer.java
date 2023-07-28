@@ -37,7 +37,7 @@ public class TCPServer
             {
                 clientID++;
                 Socket client = serverSocket.accept();
-                Runnable serverThread = new ServerThread(client, clientID);
+                Runnable serverThread = new ServerThread(client, clientID, this);
                 threads.add((ServerThread)serverThread);
                 new Thread(serverThread).start();
             }
@@ -60,6 +60,18 @@ public class TCPServer
         } 
         catch (IOException e){
             System.out.println("Error closing TCP server socket.");
+        }
+    }
+
+    // Broadcasts a message to all connected clients (except the client that sent the message)
+    public void broadcast(String message, int clientID)
+    {
+        for(ServerThread thread : threads) 
+        { 
+            if(thread.getClientID() != clientID) 
+            { 
+                thread.sendMessage(message); 
+            } 
         }
     }
 }

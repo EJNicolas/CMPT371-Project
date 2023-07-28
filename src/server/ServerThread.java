@@ -14,28 +14,40 @@ import java.net.*;
 
 public class ServerThread implements Runnable
 {
+    // Sockets and streams
     private Socket client;
+    private TCPServer server;
     private OutputStream os;
     private InputStream is;
     private PrintWriter out;
     private BufferedReader in;
     private boolean interrupt = false;
+
+    // Client info
     private int clientID;
 
     // Constructor
-    public ServerThread(Socket client, int clientID) {
+    public ServerThread(Socket client, int clientID, TCPServer server) {
         this.client = client;
-        this.clientID = clientID; // Store the clientID
+        this.clientID = clientID;
+        this.server = server;
 
         setupStreams();
-        sendClientID(); // Send the clientID to the client
+        sendClientID();
+
+        // Debug message, remove later
+        String clientMessage = "I am player " + clientID + " and I am connected.";
+        this.server.broadcast(clientMessage, clientID);
     }
+
+    // Getters
+    public int getClientID() { return clientID; }
 
     // Thread run method
     @Override
     public void run()
     {
-        System.out.println("TCP client connected.");
+        System.out.println("TCP client connected with ID " + clientID + " connected.");
         setupStreams();
 
         while(true) 
@@ -84,14 +96,23 @@ public class ServerThread implements Runnable
         }
     }
 
+    // Sends given string to client
+    public void sendMessage(String message)
+    {
+        out.println(message);
+    }
+
+    // Stop thread
     public void interrupt()
     {
         interrupt = true;
     }
     
+    // Send the clientID as a String
     private void sendClientID() {
-        out.println(clientID); // Send the clientID as a String
+        out.println(clientID);
     }
+
     // Closes client socket and streams
     private void close()
     {
