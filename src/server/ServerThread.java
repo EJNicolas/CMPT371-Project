@@ -20,11 +20,15 @@ public class ServerThread implements Runnable
     private PrintWriter out;
     private BufferedReader in;
     private boolean interrupt = false;
+    private int clientID;
 
     // Constructor
-    public ServerThread(Socket client)
-    {
+    public ServerThread(Socket client, int clientID) {
         this.client = client;
+        this.clientID = clientID; // Store the clientID
+
+        setupStreams();
+        sendClientID(); // Send the clientID to the client
     }
 
     // Thread run method
@@ -84,7 +88,10 @@ public class ServerThread implements Runnable
     {
         interrupt = true;
     }
-
+    
+    private void sendClientID() {
+        out.println(clientID); // Send the clientID as a String
+    }
     // Closes client socket and streams
     private void close()
     {
