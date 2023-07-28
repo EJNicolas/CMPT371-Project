@@ -28,14 +28,16 @@ public class TCPServer
     // Starts server, listens for clients and creates a thread for each client
     public void startServer()
     {
+        int clientID = 0;
         try {
             serverSocket = new ServerSocket(port);
             System.out.println("TCP server listening on port " + port + ".");
 
             while(true)
             {
+                clientID++;
                 Socket client = serverSocket.accept();
-                Runnable serverThread = new ServerThread(client);
+                Runnable serverThread = new ServerThread(client, clientID);
                 threads.add((ServerThread)serverThread);
                 new Thread(serverThread).start();
             }
