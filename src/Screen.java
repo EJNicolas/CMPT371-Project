@@ -6,7 +6,6 @@
  * 
  */
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -36,7 +35,8 @@ public class Screen extends JPanel implements ActionListener, MouseListener {
 	ArrayList<Square> squares = new ArrayList<Square>();
 	
 	//constructor for screen
-	Screen(){
+	Screen(int clientID){
+		playerCount = clientID;
 		timer = new Timer(5,this);
 		addMouseListener(this);
 		setPreferredSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));
@@ -53,20 +53,25 @@ public class Screen extends JPanel implements ActionListener, MouseListener {
 	//method that runs according to the timer. Practically keeps track of the mouse movements
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		mousePosX = MouseInfo.getPointerInfo().getLocation().x;
-		mousePosY = MouseInfo.getPointerInfo().getLocation().y;
-		
-		if(isDrawing) {
-			if(currSquare != null) {
+		PointerInfo pointerInfo = MouseInfo.getPointerInfo();
+		if (pointerInfo != null) {
+			Point mouseLocation = pointerInfo.getLocation();
+			mousePosX = (int) mouseLocation.getX();
+			mousePosY = (int) mouseLocation.getY();
+		}
+	
+		if (isDrawing) {
+			if (currSquare != null) {
 				currSquare.addDot(new Dot(localPlayer, mousePosX, mousePosY));
 			}
 		}
-		
+	
 		localPlayer.setPosition(mousePosX, mousePosY);
-		
+	
 		//draw screen
 		repaint();
 	}
+	
 	
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
