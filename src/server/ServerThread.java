@@ -11,6 +11,7 @@ package server;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 public class ServerThread implements Runnable
 {
@@ -23,14 +24,16 @@ public class ServerThread implements Runnable
     private BufferedReader in;
     private boolean interrupt = false;
 
-    // Client info
+    // Client data
     private int clientID;
+    private ArrayList<String> parsedMessage;
 
     // Constructor
     public ServerThread(Socket client, int clientID, TCPServer server) {
         this.client = client;
         this.clientID = clientID;
         this.server = server;
+        this.parsedMessage = new ArrayList<String>();
 
         setupStreams();
         sendClientID();
@@ -82,7 +85,8 @@ public class ServerThread implements Runnable
             try {
                 if(in.ready()) 
                 {
-                    switch(in.readLine())
+                    parseMessage(in.readLine());
+                    switch(parsedMessage.get(0))
                     {
                         case "Hello":
                             out.println("Back at you");
@@ -93,6 +97,18 @@ public class ServerThread implements Runnable
             catch (IOException e){
                 System.out.println("Error reading from TCP server socket.");
             }
+        }
+    }
+
+    // Parses message fromt client
+    private void parseMessage(String message)
+    {
+        parsedMessage.clear();
+        String[] tokens = message.split(" ");
+
+        for(String token : tokens) 
+        { 
+            parsedMessage.add(token); 
         }
     }
 
