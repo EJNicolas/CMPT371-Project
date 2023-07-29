@@ -67,16 +67,13 @@ public class Game
     }
 
     // Check if a player can draw on square
-    // Returns 1 if player can draw, 0 if the square is already occupied, 
-    // -1 if square is being drawn on by another player
-    public int canDraw(int row, int column)
+    // Returns true if player can draw, false if the square is unavailable
+    public boolean canDraw(int row, int column)
     {
         if(gameboard[row][column] == 0) 
-            return 1; 
-        else if(gameboard[row][column] < 0) 
-            return -1;
+            return true; 
         else 
-            return 0;
+            return false;
     }
 
     // Set a square to be drawn on by a player

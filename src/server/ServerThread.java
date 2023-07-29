@@ -24,9 +24,10 @@ public class ServerThread implements Runnable
     private BufferedReader in;
     private boolean interrupt = false;
 
-    // Client data
+    // Client and server data
     private int clientID;
     private ArrayList<String> parsedMessage;
+    private Game game = Game.getInstance();
 
     // Constructor
     public ServerThread(Socket client, int clientID, TCPServer server) {
@@ -37,6 +38,7 @@ public class ServerThread implements Runnable
 
         setupStreams();
         sendClientID();
+        game.addPlayer(clientID);
 
         // Debug message, remove later
         String clientMessage = "I am player " + clientID + " and I am connected.";
@@ -88,8 +90,34 @@ public class ServerThread implements Runnable
                     parseMessage(in.readLine());
                     switch(parsedMessage.get(0))
                     {
-                        case "Hello":
-                            out.println("Back at you");
+                        case "CanDraw":
+                            int x = Integer.parseInt(parsedMessage.get(2));
+                            int y = Integer.parseInt(parsedMessage.get(3));
+
+                            if(game.canDraw(x, y))
+                            {
+                                game.startDrawing(x, y, clientID);
+                                out.println("true");
+                                server.broadcast("IsDrawing " + x + " " + y, clientID);
+                            }
+                            else
+                            {
+                                out.println("false");
+                            }
+                            break;
+                        case "ClaimSquare":
+                            x = Integer.parseInt(parsedMessage.get(2));
+                            y = Integer.parseInt(parsedMessage.get(3));
+
+                            if(game.claimSquare(x, y, clientID)) 
+                            { 
+                                out.println("true"); 
+                                server.broadcast("Occupied " + clientID + " " + x + " " + y, clientID);
+                            }
+                            else 
+                            { 
+                                out.println("false"); 
+                            }
                             break;
                     }
                 }
