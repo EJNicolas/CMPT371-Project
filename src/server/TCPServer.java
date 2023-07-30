@@ -23,6 +23,7 @@ public class TCPServer
     {
         this.port = port;
         threads = new ArrayList<ServerThread>();
+        Game.getInstance().addPlayer(0);
     }
 
     // Starts server, listens for clients and creates a thread for each client
