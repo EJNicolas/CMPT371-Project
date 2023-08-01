@@ -64,6 +64,12 @@ public class Screen extends JPanel implements ActionListener, MouseListener {
 			if (currSquare != null) {
 				currSquare.addDot(new Dot(localPlayer, mousePosX, mousePosY));
 			}
+			
+			//if the player's mouse moves out of the current box, check if they can claim the square
+			if(currSquare != findCurrSquare(mousePosX, mousePosY)) {	
+				if(currSquare.checkDotsArea()) currSquare.lockSquare(localPlayer);
+				else currSquare.unlockSquare();
+			}
 		}
 	
 		localPlayer.setPosition(mousePosX, mousePosY);
