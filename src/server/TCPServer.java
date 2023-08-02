@@ -38,9 +38,11 @@ public class TCPServer
             {
                 clientID++;
                 Socket client = serverSocket.accept();
-                Runnable serverThread = new ServerThread(client, clientID, this);
+                Runnable serverThread = new ServerThread(client, clientID, this);  
                 threads.add((ServerThread)serverThread);
+                System.out.println("Server thread size: " + threads.size());
                 new Thread(serverThread).start();
+                
             }
         } 
         catch (IOException e){

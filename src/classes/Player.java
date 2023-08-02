@@ -25,7 +25,7 @@ public class Player {
 	private static final String[] playerColors = {"red", "lavender", "green", "plum", "skyblue", "yellow"};
 	private static final Color[] playerColorObjects = {Color.RED, lavender, Color.GREEN, Color.PINK, Color.BLUE, Color.YELLOW};
 	
-	public Player(int playerNum, int radius, Color color){
+	public Player(int playerNum, int radius){
 		this.playerNum = playerNum;
 		this.radius = radius;
 		this.color = playerColorObjects[playerNum-1];
@@ -68,4 +68,6 @@ public class Player {
 	public int getPlayerNum(){
 		return playerNum;
 	}
+	
+	
 }

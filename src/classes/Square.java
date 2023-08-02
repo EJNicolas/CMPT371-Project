@@ -19,6 +19,7 @@ public class Square {
 	int[] pos = new int[2];
 	int l;
 	boolean locked;
+	boolean canBeDrawn;
 	Player owner;
 	ArrayList<Dot> dots = new ArrayList<Dot>();
 	double fillPercentageReq = 0.7;
@@ -28,6 +29,7 @@ public class Square {
 		pos[1] = y;
 		this.l = l;
 		locked = false;
+		canBeDrawn = true;
 		owner = null;
 	}
 	
@@ -58,14 +60,23 @@ public class Square {
 		return owner;
 	}
 	
+	public void setCanBeDrawn(boolean b) {
+		canBeDrawn = b;
+	}
+	
+	public boolean getCanBeDrawn() {
+		return canBeDrawn;
+	}
+	
 	public void lockSquare(Player player) {
 		locked = true;
 		owner = player;
 	}
 	
-	public void unlockSquare() {
+	public void clearSquare() {
 		locked = false;
 		owner = null;
+		canBeDrawn = false;
 		dots.clear();
 	}
 	
