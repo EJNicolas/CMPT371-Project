@@ -109,15 +109,16 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		for(int i=0; i<players.size();i++) {
-			players.get(i).draw(g);
-		}
-		
 		for(int i = 0; i < GRID_ROWS; i++) {
             for(int j = 0; j < GRID_COLUMNS; j++) {
                 board[i][j].draw(g);
             }
         }
+		
+		for(int i=0; i<players.size();i++) {
+			players.get(i).draw(g);
+		}
+		
 	}
 	
 	//creates a grid of squares
@@ -163,8 +164,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
 	
     //------------------------------------------------------CALL BACKS--------------------------------------
 	//Callback events for mouse listener
-	@Override
-	public void mouseClicked(MouseEvent e) {}
 	
 	//On mouse press
 	@Override
@@ -172,7 +171,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
 		isDrawing = true;
 		currSquare = findCurrSquare(mousePosX, mousePosY);
 		
-		if(currSquare != null && currSquare.getCanBeDrawn()) {
+		if(currSquare != null && currSquare.getCanBeDrawn() && !currSquare.getLocked()) {
 			//currSquare.setOwner(localPlayer);
 			sendStream.println("CanDraw " + playerCount + " " + currSquareIndex[0] + " " + currSquareIndex[1]);
 		}
@@ -190,7 +189,9 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
 				currSquare.lockSquare(localPlayer);
 				sendStream.println("ClaimSquare " + playerCount + " " + currSquareIndex[0] + " " + currSquareIndex[1]);
 			}
-			else currSquare.clearSquare();
+			
+			
+
 		}
 	}
 	
@@ -219,13 +220,18 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
 					currSquare.lockSquare(localPlayer);
 					sendStream.println("ClaimSquare " + playerCount + " " + currSquareIndex[0] + " " + currSquareIndex[1]);
 					
-				} else currSquare.clearSquare();
+				} else {
+					currSquare.clearSquare();
+				}
 				
 			}
 		}
 	
 		localPlayer.setPosition(mousePosX, mousePosY);
 	}
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {}

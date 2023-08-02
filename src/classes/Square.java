@@ -60,6 +60,14 @@ public class Square {
 		return owner;
 	}
 	
+	public void setLocked(boolean b) {
+		locked = b;
+	}
+	
+	public boolean getLocked() {
+		return locked;
+	}
+	
 	public void setCanBeDrawn(boolean b) {
 		canBeDrawn = b;
 	}
@@ -71,12 +79,13 @@ public class Square {
 	public void lockSquare(Player player) {
 		locked = true;
 		owner = player;
+		canBeDrawn = false;
 	}
 	
 	public void clearSquare() {
 		locked = false;
 		owner = null;
-		canBeDrawn = false;
+		canBeDrawn = true;
 		dots.clear();
 	}
 	
