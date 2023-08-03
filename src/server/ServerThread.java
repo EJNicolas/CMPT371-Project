@@ -54,7 +54,8 @@ public class ServerThread implements Runnable
     {
         System.out.println("TCP client connected with ID " + clientID + " connected.");
         setupStreams();
-
+        server.broadcast("PlayerJoined " + clientID , clientID);
+        
         while(true) 
         { 
             if(interrupt) 
@@ -119,6 +120,17 @@ public class ServerThread implements Runnable
                                 out.println("false"); 
                             }
                             break;
+                            
+                        case "RequestPlayerList":
+                        	server.request("GetPlayerList " + game.getPlayerCount(), clientID);
+                        	break;
+                            
+                        case "UpdatePosition":
+                        	x = Integer.parseInt(parsedMessage.get(2));
+                        	y = Integer.parseInt(parsedMessage.get(3));
+                        	
+                        	server.broadcast("MovePlayer " + clientID + " " + x + " " + y, clientID);
+                        	break;
                     }
                 }
             } 

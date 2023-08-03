@@ -40,7 +40,6 @@ public class TCPServer
                 Socket client = serverSocket.accept();
                 Runnable serverThread = new ServerThread(client, clientID, this);  
                 threads.add((ServerThread)serverThread);
-                System.out.println("Server thread size: " + threads.size());
                 new Thread(serverThread).start();
                 
             }
@@ -72,6 +71,18 @@ public class TCPServer
         for(ServerThread thread : threads) 
         { 
             if(thread.getClientID() != clientID) 
+            { 
+                thread.sendMessage(message); 
+            } 
+        }
+    }
+    
+    // Broadcasts a message to all connected clients (except the client that sent the message)
+    public void request(String message, int clientID)
+    {
+        for(ServerThread thread : threads) 
+        { 
+            if(thread.getClientID() == clientID) 
             { 
                 thread.sendMessage(message); 
             } 

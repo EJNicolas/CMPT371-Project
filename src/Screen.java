@@ -60,10 +60,14 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
 		setPreferredSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));
 		this.setLayout(null);
 		
-		//should probably add these 3 lines to its own method to initialize the game
+		//should probably add these lines to its own method to initialize the game
 		localPlayer = new Player(playerCount, 30);
 		players.add(localPlayer);
 		createGrid();
+		
+		//ask server to get list of existing players for players joining mid game
+		sendStream.println("RequestPlayerList " + playerCount);
+		
 		
 		timer.start();
 	}
@@ -71,13 +75,14 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
 	//method that runs according to the timer.
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		sendStream.println("UpdatePosition " + playerCount + " " + mousePosX + " " + mousePosY);	//causes a lot of delay in the game, can uncomment
 		try {
 			if(receiveStream.ready()) {
 				parseMessage(receiveStream.readLine());
 				//System.out.println("client received message: " + parsedMessage.get(0));
 				switch(parsedMessage.get(0)) {
 					case "IsDrawing":
-						//int playerNum = Integer.parseInt(parsedMessage.get(1));
+						//the square on this x, y position in the 2d array will not be allowed to be drawn on
 	                    int x = Integer.parseInt(parsedMessage.get(1));
 	                    int y = Integer.parseInt(parsedMessage.get(2));
 	                    Square square = board[x][y];
@@ -85,17 +90,43 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
 	                    break;
 	                    
 					case "Occupied":
+						//the square on this x, y position in the 2d array will not be locked by playerNum
 						int playerNum = Integer.parseInt(parsedMessage.get(1));
 	                    x = Integer.parseInt(parsedMessage.get(2));
 	                    y = Integer.parseInt(parsedMessage.get(3));
 						square = board[x][y];
-	                    square.lockSquare(localPlayer);
+	                    square.lockSquare(players.get(playerNum));
 	                    break;
+	                    
+					case "PlayerJoined":
+						//Add the new player to the list of players (for people already in the game)
+						playerNum = Integer.parseInt(parsedMessage.get(1));
+						players.add(new Player(playerNum, 30));
+						break;
+						
+					case "GetPlayerList":
+						//Get the server's player list and update this player's list
+						int playerNumbers = Integer.parseInt(parsedMessage.get(1));
+						for(int i=1; i<playerNumbers; i++) {
+							if(i != playerCount) {
+								players.add(new Player(i, 30));
+							}
+						}
+						break;
+						
+					case "MovePlayer":
+						//moves a player to x and y position
+						playerNum = Integer.parseInt(parsedMessage.get(1));
+						x = Integer.parseInt(parsedMessage.get(2));
+	                    y = Integer.parseInt(parsedMessage.get(3));
+						for(int i=1; i<players.size(); i++) {
+							if(players.get(i).getPlayerNum() == playerNum) {
+								players.get(i).setPosition(x,y);
+							}
+						}
+						break;
 				}
 			}
-			
-			
-			
 		} catch (Exception err) {
 			System.out.println("Error receiving stream");
 			err.printStackTrace();
@@ -169,10 +200,11 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
 	@Override
 	public void mousePressed(MouseEvent e) {
 		isDrawing = true;
+		//on mouse click, find what square you are on
 		currSquare = findCurrSquare(mousePosX, mousePosY);
 		
+		//tell server if it can draw on this square. Square can be drawn on and isnt owned by anyone
 		if(currSquare != null && currSquare.getCanBeDrawn() && !currSquare.getLocked()) {
-			//currSquare.setOwner(localPlayer);
 			sendStream.println("CanDraw " + playerCount + " " + currSquareIndex[0] + " " + currSquareIndex[1]);
 		}
 	}
@@ -185,12 +217,13 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
 		if(currSquare != null) {
 			currSquare.addDot(new Dot(localPlayer, mousePosX, mousePosY));
 			
+			//if dots fill enough of the square, give the square to this player. Tell the server about it too
 			if(currSquare.checkDotsArea()) {
 				currSquare.lockSquare(localPlayer);
 				sendStream.println("ClaimSquare " + playerCount + " " + currSquareIndex[0] + " " + currSquareIndex[1]);
+			} else if(currSquare.getCanBeDrawn()) {	//prevents players from drawing on already claimed squares
+				currSquare.clearSquare();
 			}
-			
-			
 
 		}
 	}
@@ -219,8 +252,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
 				if(currSquare.checkDotsArea()) {
 					currSquare.lockSquare(localPlayer);
 					sendStream.println("ClaimSquare " + playerCount + " " + currSquareIndex[0] + " " + currSquareIndex[1]);
-					
-				} else {
+				} else if(currSquare.getCanBeDrawn()){	//prevents the player from clearing a claimed square
 					currSquare.clearSquare();
 				}
 				
