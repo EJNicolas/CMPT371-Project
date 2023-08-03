@@ -63,6 +63,7 @@ public class ServerThread implements Runnable
                 break; 
             }
             readToken(); 
+            checkWin();
         }
     }
 
@@ -168,6 +169,15 @@ public class ServerThread implements Runnable
     // Send the clientID as a String
     private void sendClientID() {
         out.println(clientID);
+    }
+
+    // Check if a player has won
+    public void checkWin() {
+        int winnerID = game.checkWin();
+        if(winnerID != -1)
+        {
+            server.broadcast("GameOver " + winnerID, clientID);
+        }
     }
 
     // Closes client socket and streams
