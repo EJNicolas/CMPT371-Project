@@ -253,7 +253,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
             currSquare.addDot(new Dot(localPlayer, mousePosX, mousePosY));
            
             //if dots fill enough of the square, give the square to this player. Tell the server about it too
-            if(currSquare.checkDotsArea()) {
+            if(currSquare.checkDotsArea() && !currSquare.getLocked()) {
                 currSquare.lockSquare(localPlayer);
                 sendStream.println("ClaimSquare " + playerCount + " " + currSquareIndex[0] + " " + currSquareIndex[1]);
             } else if(currSquare.getCanBeDrawn()) { //prevents players from drawing on already claimed squares
@@ -286,7 +286,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
            
             //if the player's mouse moves out of the current box, check if they can claim the square
             if(currSquare != findCurrSquare(mousePosX, mousePosY)) {    
-                if(currSquare.checkDotsArea()) {
+                if(currSquare.checkDotsArea() && !currSquare.getLocked()) {
                     currSquare.lockSquare(localPlayer);
                     sendStream.println("ClaimSquare " + playerCount + " " + currSquareIndex[0] + " " + currSquareIndex[1]);
                 } else if(currSquare.getCanBeDrawn()){  //prevents the player from clearing a claimed square
