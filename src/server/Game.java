@@ -19,7 +19,7 @@ public class Game
     public static final int BOARD_ROWS = 8;
     public static final int BOARD_COLS = 15;
     public static final int BOARD_TOTAL = BOARD_ROWS * BOARD_COLS;
-    private int free = BOARD_TOTAL; //- (BOARD_TOTAL - 5);	//reduce free to test faster
+    private int free = BOARD_TOTAL;
     private int[][] gameboard;
 
     // Player configurations
@@ -100,9 +100,9 @@ public class Game
     {
         int playerID = -1;
         int max = 0;
-        
+
         if(this.free == 0)
-        {	
+        {
             for(int i = 0; i < this.playerCount; i++)
             {
                 if(playerScores.get(i) > max)

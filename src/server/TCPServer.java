@@ -77,16 +77,7 @@ public class TCPServer
         }
     }
     
-    // Broadcasts a message to all connected clients
-    public void broadcastAll(String message)
-    {
-        for(ServerThread thread : threads) 
-        { 
-            thread.sendMessage(message); 
-        }
-    }
-    
-    // Sends a message to a specific client
+    // Broadcasts a message to all connected clients (except the client that sent the message)
     public void request(String message, int clientID)
     {
         for(ServerThread thread : threads) 
