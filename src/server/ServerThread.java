@@ -131,6 +131,14 @@ public class ServerThread implements Runnable
                         	
                         	server.broadcast("MovePlayer " + clientID + " " + x + " " + y, clientID);
                         	break;
+                        	
+                        case "DrawDot":
+                        	x = Integer.parseInt(parsedMessage.get(2));
+                        	y = Integer.parseInt(parsedMessage.get(3));
+                        	int squareX = Integer.parseInt(parsedMessage.get(4));
+                        	int squareY = Integer.parseInt(parsedMessage.get(5));
+                        	server.broadcast("ShowDot " + clientID + " " + x + " " + y + " " + squareX + " " + squareY , clientID);
+                        	break;
                     }
                 }
             } 

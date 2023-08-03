@@ -87,14 +87,11 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
             sendStream.println("UpdatePosition " + playerCount + " " + mousePosX + " " + mousePosY);
             lastSentX = mousePosX;
             lastSentY = mousePosY;
+            
+            if(isDrawing && currSquare != null && currSquare.getCanBeDrawn() && !currSquare.getLocked()) {
+            	sendStream.println("DrawDot " + playerCount + " " + mousePosX + " " + mousePosY + " " + currSquareIndex[0] + " " +currSquareIndex[1]);
+            }
         }
-
-
-
-
-
-
-
 
         new Thread(() -> {
             try {
@@ -116,11 +113,8 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
                         x = Integer.parseInt(parsedMessage.get(2));
                         y = Integer.parseInt(parsedMessage.get(3));
                         square = board[x][y];
-                        for(int i=1; i<players.size(); i++) {
-                            if(players.get(i).getPlayerNum() == playerNum) {
-                                square.lockSquare(players.get(i));
-                            }
-                        }
+                        Player player = getPlayerFromNumber(playerNum);
+                        if(player != null) square.lockSquare(player);
                         break;
                        
                     case "PlayerJoined":
@@ -150,6 +144,17 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
                             }
                         }
                         break;
+                        
+                    case "ShowDot":
+                    	playerNum = Integer.parseInt(parsedMessage.get(1));
+                    	x = Integer.parseInt(parsedMessage.get(2));
+                        y = Integer.parseInt(parsedMessage.get(3));
+                        int squareX = Integer.parseInt(parsedMessage.get(4));
+                        int squareY = Integer.parseInt(parsedMessage.get(5));
+                        square = board[squareX][squareY];
+                        player = getPlayerFromNumber(playerNum);
+                        if(player != null) square.addDot(new Dot(player, x, y));
+                        break;
                 }
             }
         } catch (Exception err) {
@@ -165,11 +170,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
     repaint();
 }
 
-
-
-
-   
-   
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
        
@@ -226,6 +226,16 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
         {
             parsedMessage.add(token);
         }
+    }
+    
+    Player getPlayerFromNumber(int n) {
+    	for(int i=1; i<players.size(); i++) {
+            if(players.get(i).getPlayerNum() == n) {
+            	return players.get(i);
+            }
+        }
+    	
+    	return null;
     }
    
     //------------------------------------------------------CALL BACKS--------------------------------------
