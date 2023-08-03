@@ -28,6 +28,7 @@ public class Game
 
     // Setup
     private static Game instance = null;
+    private boolean gameOver = false;
 
     // Constructor (Singletons have a private constructor that creates a global instance on get_instance())
     private Game()
@@ -112,7 +113,7 @@ public class Game
         int playerID = -1;
         int max = 0;
 
-        if(this.free == 0)
+        if(this.free == 0 && gameOver == false)
         {
             for(int i = 0; i < this.playerCount; i++)
             {
@@ -120,6 +121,7 @@ public class Game
                 {
                     max = playerScores.get(i);
                     playerID = i;
+                    gameOver = true;
                 }
             }
         }
