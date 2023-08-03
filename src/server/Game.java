@@ -82,6 +82,17 @@ public class Game
         gameboard[row][column] = -playerID;
     }
 
+    // Stop a player from drawing on a square
+    public boolean stopDrawing(int row, int column, int playerID)
+    {
+        if(gameboard[row][column] == -playerID)
+        {
+            gameboard[row][column] = 0;
+            return true;
+        }
+        return false;
+    }
+
     // Claim a square for a player, returns true if successful, false if the square invalid
     public boolean claimSquare(int row, int column, int playerID)
     {

@@ -119,6 +119,19 @@ public class ServerThread implements Runnable
                                 out.println("false"); 
                             }
                             break;
+                        case "DrawFail":
+                            x = Integer.parseInt(parsedMessage.get(2));
+                            y = Integer.parseInt(parsedMessage.get(3));
+
+                            if(game.stopDrawing(x, y, clientID))
+                            {
+                                out.println("true");
+                                server.broadcast("StoppedDrawing " + x + " " + y, clientID);
+                            }
+                            else
+                            {
+                                out.println("false");
+                            }
                     }
                 }
             } 
