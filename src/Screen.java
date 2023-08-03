@@ -116,7 +116,11 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
                         x = Integer.parseInt(parsedMessage.get(2));
                         y = Integer.parseInt(parsedMessage.get(3));
                         square = board[x][y];
-                        square.lockSquare(players.get(playerNum));
+                        for(int i=1; i<players.size(); i++) {
+                            if(players.get(i).getPlayerNum() == playerNum) {
+                                square.lockSquare(players.get(i));
+                            }
+                        }
                         break;
                        
                     case "PlayerJoined":
