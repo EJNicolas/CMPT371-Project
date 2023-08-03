@@ -114,6 +114,11 @@ public class ServerThread implements Runnable
                             { 
                                 out.println("true"); 
                                 server.broadcast("Occupied " + clientID + " " + x + " " + y, clientID);
+                                
+                                int winnerID = game.checkWin();
+                                if(winnerID != -1) {
+                                	server.broadcastAll("GameOver " + winnerID);
+                                }
                             }
                             else 
                             { 
