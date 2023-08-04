@@ -63,7 +63,7 @@ public class Game
     // Add a player given playerID and returns the total number of players in game
     public int addPlayer(int playerID)
     {
-        playerCount++;
+        if(playerID != 0) { playerCount++; }
         playerScores.add(playerID, 0);
         return playerCount;
     }

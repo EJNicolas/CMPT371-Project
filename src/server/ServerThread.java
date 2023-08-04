@@ -42,7 +42,7 @@ public class ServerThread implements Runnable
         game.addPlayer(clientID);
 
         // Run rejoin protocol if game has already started
-        // if(game.gameStarted()) { rejoin(); }
+        if(game.gameStarted()) { rejoin(); }
 
         // Debug message, remove later
         String clientMessage = "I am player " + clientID + " and I am connected.";
@@ -210,17 +210,33 @@ public class ServerThread implements Runnable
     }
 
     // Rejoin protocol: send this client the current game state
-    // public void rejoin()
-    // {
-    //     int[][] gameboard = game.getGameboard();
-    //     int playerCount = game.getPlayerCount();
-    //     ArrayList<Point> claimedSquares = new ArrayList<Point>();
+    public void rejoin()
+    {
+        int[][] gameboard = game.getGameboard();
+        int playerCount = game.getPlayerCount();
+        ArrayList<Point> claimedSquares = new ArrayList<Point>();
 
-    //     for(int i = 0; i < Game.BOARD_ROWS; i++)
-    //     {
-
-    //     }
-    // }
+        for(int playerID = 1; playerID < playerCount; playerID++)
+        {
+            for(int i = 0; i < Game.BOARD_ROWS; i++)
+            {
+                for(int j = 0; j < Game.BOARD_COLS; j++)
+                {
+                    if(gameboard[i][j] == playerID)
+                    {
+                        claimedSquares.add(new Point(i, j));
+                    }
+                }
+            }
+            String message = "Rejoin " + playerID + " ";
+            for(Point square : claimedSquares)
+            {
+                message += square.x + " " + square.y + " ";
+            }
+            sendMessage(message);
+            claimedSquares.clear();
+        }
+    }
 
     // Closes client socket and streams
     private void close()
