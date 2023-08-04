@@ -155,6 +155,13 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
                         player = getPlayerFromNumber(playerNum);
                         if(player != null) square.addDot(new Dot(player, x, y));
                         break;
+                        
+                    case "StoppedDrawing":
+                    	x = Integer.parseInt(parsedMessage.get(1));
+                        y = Integer.parseInt(parsedMessage.get(2));
+                        square = board[x][y];
+                        square.clearSquare();
+                    	break;
                 }
             }
         } catch (Exception err) {
@@ -268,9 +275,8 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
                 sendStream.println("ClaimSquare " + playerCount + " " + currSquareIndex[0] + " " + currSquareIndex[1]);
             } else if(currSquare.getCanBeDrawn()) { //prevents players from drawing on already claimed squares
                 currSquare.clearSquare();
+                sendStream.println("DrawFail " + playerCount + " " + currSquareIndex[0] + " " + currSquareIndex[1]);
             }
-
-
         }
     }
    
@@ -301,6 +307,8 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
                     sendStream.println("ClaimSquare " + playerCount + " " + currSquareIndex[0] + " " + currSquareIndex[1]);
                 } else if(currSquare.getCanBeDrawn()){  //prevents the player from clearing a claimed square
                     currSquare.clearSquare();
+                    sendStream.println("DrawFail " + playerCount + " " + currSquareIndex[0] + " " + currSquareIndex[1]);
+                    isDrawing = false;
                 }
                
             }

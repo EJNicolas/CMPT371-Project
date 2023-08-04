@@ -125,6 +125,7 @@ public class ServerThread implements Runnable
                                 out.println("false"); 
                             }
                             break;
+                            
                         case "DrawFail":
                             x = Integer.parseInt(parsedMessage.get(2));
                             y = Integer.parseInt(parsedMessage.get(3));
@@ -138,6 +139,7 @@ public class ServerThread implements Runnable
                             {
                                 out.println("false");
                             }
+                            break;
                             
                         case "RequestPlayerList":
                         	server.request("GetPlayerList " + game.getPlayerCount(), clientID);
@@ -157,11 +159,13 @@ public class ServerThread implements Runnable
                         	int squareY = Integer.parseInt(parsedMessage.get(5));
                         	server.broadcast("ShowDot " + clientID + " " + x + " " + y + " " + squareX + " " + squareY , clientID);
                         	break;
+                        	
                         case "Disconnect":
                             game.disconnectPlayer(clientID);
                             server.broadcast("PlayerDisconnect " + clientID, clientID);
                             server.removeThread(this);
                             interrupt();
+                            break;
                     }
                 }
             } 
