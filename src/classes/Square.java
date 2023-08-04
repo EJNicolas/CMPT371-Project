@@ -104,21 +104,24 @@ public class Square {
 	public boolean checkDotsArea() {
 		Set<Point> uniquePoints = new HashSet<>();
 	
-		for(Dot dot : dots) {
-			
+		double buffer = 0.1; 
+	
+		for (Dot dot : dots) {
 			int[] posD = dot.getPos();
-			
-			if(checkCollision(posD[0], posD[1])) {  // check if dot is inside square
-				
-				for(int i = -dot.radius; i < dot.radius; i++) { 
-					
-					for(int j = -dot.radius; j < dot.radius; j++) {                
-						
-						if(i*i + j*j <= dot.radius * dot.radius) {  // ensures we are checking the actual circular area of a dot drawn
-							
+	
+			if (checkCollision(posD[0], posD[1])) {
+				for (int i = -dot.radius; i < dot.radius; i++) {
+					for (int j = -dot.radius; j < dot.radius; j++) {
+						if (i * i + j * j <= dot.radius * dot.radius) {
 							int x = posD[0] + i;
 							int y = posD[1] + j;
-							if(checkCollision(x, y)) {
+	
+							// reduce the effective size of the square by the buffer percentage
+							int bufferX = (int) (l * buffer);
+							int bufferY = (int) (l * buffer);
+	
+							// check if the point is well inside the square so that it doesn't fill the square if we just outline it near the edge
+							if (pos[0] + bufferX < x && x < pos[0] + l - bufferX && pos[1] + bufferY < y && y < pos[1] + l - bufferY) {
 								uniquePoints.add(new Point(x, y));
 							}
 						}
@@ -126,11 +129,15 @@ public class Square {
 				}
 			}
 		}
-		double squareArea = l * l;
-		double dotsArea = uniquePoints.size(); // 1 dot = 1 point
 	
-		if(dotsArea > squareArea * 0.5) return true;  // check if dots cover more than 50% of the square
-		else return false;
+		double squareArea = l * l;
+		double dotsArea = uniquePoints.size();
+	
+		if (dotsArea > squareArea * 0.5) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	
