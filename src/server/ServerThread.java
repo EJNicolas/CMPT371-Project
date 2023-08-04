@@ -208,7 +208,7 @@ public class ServerThread implements Runnable
         int winnerID = game.checkWin();
         if(winnerID != -1)
         {
-            server.broadcast("GameOver " + winnerID, clientID);
+            server.broadcast("GameOver " + winnerID);
         }
     }
 

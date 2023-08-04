@@ -52,6 +52,9 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
     BufferedReader receiveStream;
    
     ArrayList<String> parsedMessage;
+    
+    String winnerString;
+    boolean gameOver;
    
     //constructor for screen
     Screen(int clientID, PrintWriter send, BufferedReader receive){
@@ -69,6 +72,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
         localPlayer = new Player(playerCount, 30);
         players.add(localPlayer);
         createGrid();
+        gameOver = false;
        
         //ask server to get list of existing players for players joining mid game
         sendStream.println("RequestPlayerList " + playerCount);
@@ -173,6 +177,13 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
                             if(player != null) square.lockSquare(player);
                         }
                         break;
+                        
+                    case "GameOver":
+                    	playerNum = Integer.parseInt(parsedMessage.get(1));
+                    	if(localPlayer.getPlayerNum() == playerNum) winnerString = "YOU WIN!";
+                    	else winnerString = "PLAYER " + playerNum + "WINS";
+                    	gameOver = true;
+                    	break;
                 }
             }
         } catch (Exception err) {
@@ -199,6 +210,13 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
        
         for(int i=0; i<players.size();i++) {
             players.get(i).draw(g);
+        }
+        
+        if(gameOver) {
+        	Font oldFont = g.getFont();
+        	g.setFont(new Font("Arial", Font.BOLD, 100));
+        	g.drawString(winnerString, 500, 400);
+        	g.setFont(oldFont);
         }
        
     }
