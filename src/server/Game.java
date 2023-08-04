@@ -17,7 +17,7 @@ public class Game
 {
     // Board configurations
     public static final int BOARD_ROWS = 8;
-    public static final int BOARD_COLS = 18;
+    public static final int BOARD_COLS = 15;
     public static final int BOARD_TOTAL = BOARD_ROWS * BOARD_COLS;
     private int free = BOARD_TOTAL;
     private int[][] gameboard;

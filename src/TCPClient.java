@@ -21,7 +21,7 @@ public class TCPClient {
 
             JFrame frame = new JFrame("CMPT 371 Project");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            Screen s = new Screen(Integer.parseInt(clientID));
+            Screen s = new Screen(Integer.parseInt(clientID), out, in);
 
             JLabel clientIdLabel = new JLabel("Client ID: " + clientID);
             clientIdLabel.setBounds(10, 10, 200, 20); // Set the position and size of the label
@@ -35,7 +35,7 @@ public class TCPClient {
             out.println("Thank you for the client ID!");
 
             // Close the connection
-            clientSocket.close();
+            //clientSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
