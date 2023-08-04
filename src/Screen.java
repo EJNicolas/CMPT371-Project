@@ -137,14 +137,12 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
                         playerNum = Integer.parseInt(parsedMessage.get(1));
                         x = Integer.parseInt(parsedMessage.get(2));
                         y = Integer.parseInt(parsedMessage.get(3));
-                        for(int i=1; i<players.size(); i++) {
-                            if(players.get(i).getPlayerNum() == playerNum) {
-                                players.get(i).setPosition(x,y);
-                            }
-                        }
+                        player = getPlayerFromNumber(playerNum);
+                        player.setPosition(x, y);
                         break;
                         
                     case "ShowDot":
+                    	//Shows dot on specific square on the board
                     	playerNum = Integer.parseInt(parsedMessage.get(1));
                     	x = Integer.parseInt(parsedMessage.get(2));
                         y = Integer.parseInt(parsedMessage.get(3));
@@ -156,6 +154,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
                         break;
                         
                     case "StoppedDrawing":
+                    	//clears (empties dots, clears owner, can be drawn on) square
                     	x = Integer.parseInt(parsedMessage.get(1));
                         y = Integer.parseInt(parsedMessage.get(2));
                         square = board[x][y];
@@ -163,6 +162,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
                     	break;
                     
                     case "Rejoin":
+                    	//colors in squares that were already filled in when a player joins late
                         playerNum = Integer.parseInt(parsedMessage.get(1));
                         for(int i = 2; i < parsedMessage.size(); i+=2) {
                             x = Integer.parseInt(parsedMessage.get(i));
