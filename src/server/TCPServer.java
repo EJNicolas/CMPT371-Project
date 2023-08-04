@@ -38,9 +38,10 @@ public class TCPServer
             {
                 clientID++;
                 Socket client = serverSocket.accept();
-                Runnable serverThread = new ServerThread(client, clientID, this);
+                Runnable serverThread = new ServerThread(client, clientID, this);  
                 threads.add((ServerThread)serverThread);
                 new Thread(serverThread).start();
+                
             }
         } 
         catch (IOException e){
@@ -70,6 +71,18 @@ public class TCPServer
         for(ServerThread thread : threads) 
         { 
             if(thread.getClientID() != clientID) 
+            { 
+                thread.sendMessage(message); 
+            } 
+        }
+    }
+    
+    // Broadcasts a message to all connected clients (except the client that sent the message)
+    public void request(String message, int clientID)
+    {
+        for(ServerThread thread : threads) 
+        { 
+            if(thread.getClientID() == clientID) 
             { 
                 thread.sendMessage(message); 
             } 
