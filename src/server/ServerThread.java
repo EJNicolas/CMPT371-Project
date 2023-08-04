@@ -12,6 +12,7 @@ package server;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.awt.Point;
 
 public class ServerThread implements Runnable
 {
@@ -39,6 +40,9 @@ public class ServerThread implements Runnable
         setupStreams();
         sendClientID();
         game.addPlayer(clientID);
+
+        // Run rejoin protocol if game has already started
+        // if(game.gameStarted()) { rejoin(); }
 
         // Debug message, remove later
         String clientMessage = "I am player " + clientID + " and I am connected.";
@@ -133,6 +137,11 @@ public class ServerThread implements Runnable
                             {
                                 out.println("false");
                             }
+                        case "Disconnect":
+                            game.disconnectPlayer(clientID);
+                            server.broadcast("PlayerDisconnect " + clientID, clientID);
+                            server.removeThread(this);
+                            interrupt();
                     }
                 }
             } 
@@ -179,6 +188,19 @@ public class ServerThread implements Runnable
             server.broadcast("GameOver " + winnerID, clientID);
         }
     }
+
+    // Rejoin protocol: send this client the current game state
+    // public void rejoin()
+    // {
+    //     int[][] gameboard = game.getGameboard();
+    //     int playerCount = game.getPlayerCount();
+    //     ArrayList<Point> claimedSquares = new ArrayList<Point>();
+
+    //     for(int i = 0; i < Game.BOARD_ROWS; i++)
+    //     {
+
+    //     }
+    // }
 
     // Closes client socket and streams
     private void close()

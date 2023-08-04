@@ -75,4 +75,10 @@ public class TCPServer
             } 
         }
     }
+
+    // Remove a client thread from the thread list
+    public void removeThread(ServerThread thread)
+    {
+        threads.remove(thread);
+    }
 }

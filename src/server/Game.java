@@ -51,6 +51,7 @@ public class Game
 
     // Getters
     public int getPlayerCount() { return playerCount; }
+    public int[][] getGameboard() { return gameboard; }
 
     // Gets game data instance, creates one if it doesn't exist
     public static Game getInstance()
@@ -126,6 +127,29 @@ public class Game
             }
         }
         return playerID;
+    }
+
+    // Disconnected player and remove their tiles
+    public void disconnectPlayer(int playerID)
+    {
+        for(int i = 0; i < BOARD_ROWS; i++)
+        {
+            for(int j = 0; j < BOARD_COLS; j++)
+            {
+                if(gameboard[i][j] == playerID || gameboard[i][j] == -playerID)
+                {
+                    gameboard[i][j] = 0;
+                }
+            }
+        }
+        playerScores.set(playerID, -1);
+    }
+
+    // Check if game has started
+    public boolean gameStarted()
+    {
+        if(free == BOARD_TOTAL) { return false; }
+        else { return true; }
     }
 
     // Debug: Print current gameboard state
