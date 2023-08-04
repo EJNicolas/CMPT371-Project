@@ -73,7 +73,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
         //ask server to get list of existing players for players joining mid game
         sendStream.println("RequestPlayerList " + playerCount);
        
-       
         timer.start();
     }
    
@@ -174,7 +173,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
                             if(player != null) square.lockSquare(player);
                         }
                         break;
-                        
                 }
             }
         } catch (Exception err) {
