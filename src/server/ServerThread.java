@@ -138,6 +138,7 @@ public class ServerThread implements Runnable
                             {
                                 out.println("false");
                             }
+                            break;
                             
                         case "RequestPlayerList":
                         	server.request("GetPlayerList " + game.getPlayerCount(), clientID);
@@ -163,6 +164,7 @@ public class ServerThread implements Runnable
                             server.broadcast("PlayerDisconnect " + clientID, clientID);
                             server.removeThread(this);
                             interrupt();
+                            break;
                     }
                 }
             } 
