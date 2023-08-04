@@ -155,6 +155,19 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
                         player = getPlayerFromNumber(playerNum);
                         if(player != null) square.addDot(new Dot(player, x, y));
                         break;
+                    
+                    case "Rejoin":
+                        playerNum = Integer.parseInt(parsedMessage.get(1));
+                        for(int i = 2; i < parsedMessage.size(); i+=2) {
+                            x = Integer.parseInt(parsedMessage.get(i));
+                            y = Integer.parseInt(parsedMessage.get(i+1));
+                            square = board[x][y];
+                            square.setCanBeDrawn(false);
+                            player = getPlayerFromNumber(playerNum);
+                            if(player != null) square.lockSquare(player);
+                        }
+                        break;
+                        
                 }
             }
         } catch (Exception err) {

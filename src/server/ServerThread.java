@@ -29,6 +29,7 @@ public class ServerThread implements Runnable
     private int clientID;
     private ArrayList<String> parsedMessage;
     private Game game = Game.getInstance();
+    private boolean rejoined = false;
 
     // Constructor
     public ServerThread(Socket client, int clientID, TCPServer server) {
@@ -40,9 +41,6 @@ public class ServerThread implements Runnable
         setupStreams();
         sendClientID();
         game.addPlayer(clientID);
-
-        // Run rejoin protocol if game has already started
-        if(game.gameStarted()) { rejoin(); }
 
         // Debug message, remove later
         String clientMessage = "I am player " + clientID + " and I am connected.";
@@ -111,6 +109,7 @@ public class ServerThread implements Runnable
                                 out.println("false");
                             }
                             break;
+
                         case "ClaimSquare":
                             x = Integer.parseInt(parsedMessage.get(2));
                             y = Integer.parseInt(parsedMessage.get(3));
@@ -125,6 +124,7 @@ public class ServerThread implements Runnable
                                 out.println("false"); 
                             }
                             break;
+
                         case "DrawFail":
                             x = Integer.parseInt(parsedMessage.get(2));
                             y = Integer.parseInt(parsedMessage.get(3));
@@ -141,12 +141,12 @@ public class ServerThread implements Runnable
                             
                         case "RequestPlayerList":
                         	server.request("GetPlayerList " + game.getPlayerCount(), clientID);
+                            if(game.gameStarted()) { rejoin(); }
                         	break;
                             
                         case "UpdatePosition":
                         	x = Integer.parseInt(parsedMessage.get(2));
                         	y = Integer.parseInt(parsedMessage.get(3));
-                        	
                         	server.broadcast("MovePlayer " + clientID + " " + x + " " + y, clientID);
                         	break;
                         	
@@ -157,6 +157,7 @@ public class ServerThread implements Runnable
                         	int squareY = Integer.parseInt(parsedMessage.get(5));
                         	server.broadcast("ShowDot " + clientID + " " + x + " " + y + " " + squareX + " " + squareY , clientID);
                         	break;
+
                         case "Disconnect":
                             game.disconnectPlayer(clientID);
                             server.broadcast("PlayerDisconnect " + clientID, clientID);
@@ -212,6 +213,7 @@ public class ServerThread implements Runnable
     // Rejoin protocol: send this client the current game state
     public void rejoin()
     {
+        if(this.rejoined == true) { return; }
         int[][] gameboard = game.getGameboard();
         int playerCount = game.getPlayerCount();
         ArrayList<Point> claimedSquares = new ArrayList<Point>();
@@ -236,6 +238,7 @@ public class ServerThread implements Runnable
             sendMessage(message);
             claimedSquares.clear();
         }
+        this.rejoined = true;
     }
 
     // Closes client socket and streams
