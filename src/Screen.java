@@ -27,7 +27,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
     private static Screen instance = null;
    
     private Timer timer;
-    public final static int SCREEN_WIDTH = 1600;
+    public final static int SCREEN_WIDTH = 900;
     public final static int SCREEN_HEIGHT= 900;
    
     int playerCount = 1;
