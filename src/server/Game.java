@@ -16,8 +16,8 @@ import java.util.ArrayList;
 public class Game 
 {
     // Board configurations
-    public static final int BOARD_ROWS = 8;
-    public static final int BOARD_COLS = 15;
+    public static final int BOARD_ROWS = 7;
+    public static final int BOARD_COLS = 7;
     public static final int BOARD_TOTAL = BOARD_ROWS * BOARD_COLS;
     private int free = BOARD_TOTAL;
     private int[][] gameboard;
@@ -116,7 +116,8 @@ public class Game
 
         if(this.free == 0 && gameOver == false)
         {
-            for(int i = 0; i < this.playerCount; i++)
+            System.out.print("Player count: " + this.playerCount + "\n");
+            for(int i = 1; i <= this.playerCount; i++)
             {
                 if(playerScores.get(i) > max)
                 {

@@ -87,90 +87,89 @@ public class ServerThread implements Runnable
     // Parses input from client and sends response
     public void readToken()
     {
-        while(true) {
-            try {
-                if(in.ready()) 
+        try {
+            if(in.ready()) 
+            {
+                parseMessage(in.readLine());
+                switch(parsedMessage.get(0))
                 {
-                    parseMessage(in.readLine());
-                    switch(parsedMessage.get(0))
-                    {
-                        case "CanDraw":
-                            int x = Integer.parseInt(parsedMessage.get(2));
-                            int y = Integer.parseInt(parsedMessage.get(3));
+                    case "CanDraw":
+                        int x = Integer.parseInt(parsedMessage.get(2));
+                        int y = Integer.parseInt(parsedMessage.get(3));
 
-                            if(game.canDraw(x, y))
-                            {
-                                game.startDrawing(x, y, clientID);
-                                out.println("true");
-                                server.broadcast("IsDrawing " + x + " " + y, clientID);
-                            }
-                            else
-                            {
-                                out.println("false");
-                            }
-                            break;
+                        if(game.canDraw(x, y))
+                        {
+                            game.startDrawing(x, y, clientID);
+                            out.println("true");
+                            server.broadcast("IsDrawing " + x + " " + y, clientID);
+                        }
+                        else
+                        {
+                            out.println("false");
+                        }
+                        break;
 
-                        case "ClaimSquare":
-                            x = Integer.parseInt(parsedMessage.get(2));
-                            y = Integer.parseInt(parsedMessage.get(3));
+                    case "ClaimSquare":
+                        x = Integer.parseInt(parsedMessage.get(2));
+                        y = Integer.parseInt(parsedMessage.get(3));
 
-                            if(game.claimSquare(x, y, clientID)) 
-                            { 
-                                out.println("true"); 
-                                server.broadcast("Occupied " + clientID + " " + x + " " + y, clientID);
-                            }
-                            else 
-                            { 
-                                out.println("false"); 
-                            }
-                            break;
+                        if(game.claimSquare(x, y, clientID)) 
+                        { 
+                            out.println("true"); 
+                            server.broadcast("Occupied " + clientID + " " + x + " " + y, clientID);
+                        }
+                        else 
+                        { 
+                            out.println("false"); 
+                        }
+                        game.printGameBoard();
+                        break;
 
-                        case "DrawFail":
-                            x = Integer.parseInt(parsedMessage.get(2));
-                            y = Integer.parseInt(parsedMessage.get(3));
+                    case "DrawFail":
+                        x = Integer.parseInt(parsedMessage.get(2));
+                        y = Integer.parseInt(parsedMessage.get(3));
 
-                            if(game.stopDrawing(x, y, clientID))
-                            {
-                                out.println("true");
-                                server.broadcast("StoppedDrawing " + x + " " + y, clientID);
-                            }
-                            else
-                            {
-                                out.println("false");
-                            }
-                            break;
-                            
-                        case "RequestPlayerList":
-                        	server.request("GetPlayerList " + game.getPlayerCount(), clientID);
-                            if(game.gameStarted()) { rejoin(); }
-                        	break;
-                            
-                        case "UpdatePosition":
-                        	x = Integer.parseInt(parsedMessage.get(2));
-                        	y = Integer.parseInt(parsedMessage.get(3));
-                        	server.broadcast("MovePlayer " + clientID + " " + x + " " + y, clientID);
-                        	break;
-                        	
-                        case "DrawDot":
-                        	x = Integer.parseInt(parsedMessage.get(2));
-                        	y = Integer.parseInt(parsedMessage.get(3));
-                        	int squareX = Integer.parseInt(parsedMessage.get(4));
-                        	int squareY = Integer.parseInt(parsedMessage.get(5));
-                        	server.broadcast("ShowDot " + clientID + " " + x + " " + y + " " + squareX + " " + squareY , clientID);
-                        	break;
+                        if(game.stopDrawing(x, y, clientID))
+                        {
+                            out.println("true");
+                            server.broadcast("StoppedDrawing " + x + " " + y, clientID);
+                        }
+                        else
+                        {
+                            out.println("false");
+                        }
+                        break;
+                        
+                    case "RequestPlayerList":
+                        server.request("GetPlayerList " + game.getPlayerCount(), clientID);
+                        if(game.gameStarted()) { rejoin(); }
+                        break;
+                        
+                    case "UpdatePosition":
+                        x = Integer.parseInt(parsedMessage.get(2));
+                        y = Integer.parseInt(parsedMessage.get(3));
+                        server.broadcast("MovePlayer " + clientID + " " + x + " " + y, clientID);
+                        break;
+                        
+                    case "DrawDot":
+                        x = Integer.parseInt(parsedMessage.get(2));
+                        y = Integer.parseInt(parsedMessage.get(3));
+                        int squareX = Integer.parseInt(parsedMessage.get(4));
+                        int squareY = Integer.parseInt(parsedMessage.get(5));
+                        server.broadcast("ShowDot " + clientID + " " + x + " " + y + " " + squareX + " " + squareY , clientID);
+                        break;
 
-                        case "Disconnect":
-                            game.disconnectPlayer(clientID);
-                            server.broadcast("PlayerDisconnect " + clientID, clientID);
-                            server.removeThread(this);
-                            interrupt();
-                            break;
-                    }
+                    case "Disconnect":
+                        game.disconnectPlayer(clientID);
+                        server.broadcast("PlayerDisconnect " + clientID, clientID);
+                        server.removeThread(this);
+                        interrupt();
+                        break;
                 }
-            } 
-            catch (IOException e){
-                System.out.println("Error reading from TCP server socket.");
             }
+        } 
+        catch (IOException e){
+            System.out.println("Error reading from TCP server socket.");
         }
     }
 
@@ -209,6 +208,7 @@ public class ServerThread implements Runnable
         if(winnerID != -1)
         {
             server.broadcast("GameOver " + winnerID);
+            System.out.println("Player " + winnerID + " has won the game.");
         }
     }
 
