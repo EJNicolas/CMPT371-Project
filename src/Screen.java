@@ -181,7 +181,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
                     case "GameOver":
                     	playerNum = Integer.parseInt(parsedMessage.get(1));
                     	if(localPlayer.getPlayerNum() == playerNum) winnerString = "YOU WIN!";
-                    	else winnerString = "PLAYER " + playerNum + "WINS";
+                    	else winnerString = "P" + playerNum + " WINS";
                     	gameOver = true;
                     	break;
                 }
@@ -215,7 +215,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
         if(gameOver) {
         	Font oldFont = g.getFont();
         	g.setFont(new Font("Arial", Font.BOLD, 100));
-        	g.drawString(winnerString, 500, 400);
+        	g.drawString(winnerString, 150, 400);
         	g.setFont(oldFont);
         }
        
@@ -336,7 +336,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
             if(currSquare != findCurrSquare(mousePosX, mousePosY)) {    
                 if(currSquare.checkDotsArea() && !currSquare.getLocked()) {
                     currSquare.lockSquare(localPlayer);
-                    sendStream.println("ClaimSquare " + playerCount + " " + currSquareIndex[0] + " " + currSquareIndex[1]);
+                    sendStream.println("ClaimSquare " + playerCount + " " + prevSquareIndex[0] + " " + prevSquareIndex[1]);
                 } else if(currSquare.getCanBeDrawn()){  //prevents the player from clearing a claimed square
                     currSquare.clearSquare();
                     sendStream.println("DrawFail " + playerCount + " " + prevSquareIndex[0] + " " + prevSquareIndex[1]);

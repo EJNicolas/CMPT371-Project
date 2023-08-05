@@ -112,7 +112,6 @@ public class ServerThread implements Runnable
                     case "ClaimSquare":
                         x = Integer.parseInt(parsedMessage.get(2));
                         y = Integer.parseInt(parsedMessage.get(3));
-
                         if(game.claimSquare(x, y, clientID)) 
                         { 
                             out.println("true"); 
