@@ -41,13 +41,13 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
     private int lastSentX, lastSentY;
    
     public static final int GRID_ROWS = 7;
-    public static final int GRID_COLUMNS = 14;
+    public static final int GRID_COLUMNS = 7;
     public static final int SQUARE_LENGTH = 100;
    
     ArrayList<Square> squares = new ArrayList<Square>();
     Square board[][];
     int[] currSquareIndex = new int[2];
-   
+    int [] prevSquareIndex = new int[2];
     PrintWriter sendStream;
     BufferedReader receiveStream;
    
@@ -236,6 +236,8 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
         for(int i = 0; i < GRID_ROWS; i++) {
             for(int j = 0; j < GRID_COLUMNS; j++) {
                 if(board[i][j].checkCollision(x,y)) {
+                    prevSquareIndex[0] =currSquareIndex[0];
+                    prevSquareIndex[1] =currSquareIndex[1];
                     currSquareIndex[0] = i;
                     currSquareIndex[1] = j;
                     return board[i][j];
@@ -304,6 +306,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
                 sendStream.println("ClaimSquare " + playerCount + " " + currSquareIndex[0] + " " + currSquareIndex[1]);
             } else if(currSquare.getCanBeDrawn()) { //prevents players from drawing on already claimed squares
                 currSquare.clearSquare();
+                sendStream.println("DrawFail " + playerCount + " " + prevSquareIndex[0] + " " + prevSquareIndex[1]);
                 sendStream.println("DrawFail " + playerCount + " " + currSquareIndex[0] + " " + currSquareIndex[1]);
             }
         }
@@ -336,6 +339,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
                     sendStream.println("ClaimSquare " + playerCount + " " + currSquareIndex[0] + " " + currSquareIndex[1]);
                 } else if(currSquare.getCanBeDrawn()){  //prevents the player from clearing a claimed square
                     currSquare.clearSquare();
+                    sendStream.println("DrawFail " + playerCount + " " + prevSquareIndex[0] + " " + prevSquareIndex[1]);
                     sendStream.println("DrawFail " + playerCount + " " + currSquareIndex[0] + " " + currSquareIndex[1]);
                     isDrawing = false;
                 }
