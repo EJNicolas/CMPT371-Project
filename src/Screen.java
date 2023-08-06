@@ -125,7 +125,6 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
                         int y = Integer.parseInt(parsedMessage.get(2));
                         Square square = board[x][y];
                         square.setCanBeDrawn(false);
-                        square.setLocked(true);
                         break;
                        
                     case "Occupied":
@@ -316,7 +315,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
     public void mouseReleased(MouseEvent e) {
         isDrawing = false;
        
-        if(currSquare != null) {
+        if(currSquare != null && currSquare.getCanBeDrawn()) {
             currSquare.addDot(new Dot(localPlayer, mousePosX, mousePosY));
            
             //if dots fill enough of the square, give the square to this player. Tell the server about it too
@@ -347,7 +346,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
         mousePosY = e.getY();
    
         if (isDrawing) {
-            if (currSquare != null) {
+            if (currSquare != null && currSquare.getCanBeDrawn()) {
                 currSquare.addDot(new Dot(localPlayer, mousePosX, mousePosY));
             }
            
