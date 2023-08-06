@@ -125,6 +125,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
                         int y = Integer.parseInt(parsedMessage.get(2));
                         Square square = board[x][y];
                         square.setCanBeDrawn(false);
+                        square.setLocked(true);
                         break;
                        
                     case "Occupied":
