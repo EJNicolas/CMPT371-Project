@@ -80,6 +80,23 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
         timer.start();
     }
    
+    public interface GameOverListener {
+        void onGameOver();
+    }
+    
+    private GameOverListener gameOverListener;
+    
+    public void setGameOverListener(GameOverListener listener) {
+        this.gameOverListener = listener;
+    }
+    
+    private void notifyGameOver() {
+        if (gameOverListener != null) {
+            gameOverListener.onGameOver();
+        }
+    }
+    
+
     //method that runs according to the timer.
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -183,6 +200,7 @@ public class Screen extends JPanel implements ActionListener, MouseListener, Mou
                     	if(localPlayer.getPlayerNum() == playerNum) winnerString = "YOU WIN!";
                     	else winnerString = "P" + playerNum + " WINS";
                     	gameOver = true;
+                        notifyGameOver(); 
                     	break;
                 }
             }
